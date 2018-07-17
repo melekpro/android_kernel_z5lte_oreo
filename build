@@ -39,7 +39,7 @@ read -rsn1 -p "${PURP}Type h for help (b|c|h):${RST}" O
 		shift
 }
 
-function banner() {
+function BANNER() {
 clear
         echo "${BLD}${CYN} MADE BY YUVRAJ SAXENA (AKA: frap130)"
         echo
