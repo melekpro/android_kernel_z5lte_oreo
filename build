@@ -19,8 +19,29 @@ RST=$'\033[0m'
 YLW=$'\033[01;33m'
 
 function START_SCRIPT() {
-echo "${GRN} Welcome ${RST}"
-read -rsn1 -p "${PURP}Type h for help (b|c|h):${RST}" O
+if [[ ${BUILDING_ON_CI} = 'y' ]]; then
+        args="${*}"
+        while [[ ${#} -ge 1 ]]; do
+	case "${1}" in
+                "-b"|"--build")
+                        BUILD=y
+                        ;;
+		"-c"|"--clean")
+			CLEAN=y
+			;;
+                "-h"|"--help")
+                        HELP=y
+                        ;;
+		*)
+			echo "${RED}Opps:Invalid Option${RST}"
+                        exit 1;
+			;;
+		esac
+		shift
+        done
+else
+        echo "${GRN} Welcome ${RST}"
+        read -rsn1 -p "${PURP}Type h for help (b|c|h):${RST}" O
 	case "${O}" in
                 "b"|"build")
                         BUILD=y
@@ -37,6 +58,7 @@ read -rsn1 -p "${PURP}Type h for help (b|c|h):${RST}" O
 			;;
 		esac
 		shift
+fi
 }
 
 function BANNER() {
@@ -95,6 +117,7 @@ clear
 }
 
 function CHECK() {
+clear
 if [[ ! -e ${OIMAGE} ]];
 then
         echo "${RED}############################"
@@ -129,10 +152,10 @@ clear
 }
 
 function HELP() {
-	echo "${ORNG}options:"
-	echo "${CYN}  b, build     Build Kernel"
-	echo "${RST}  c, clean     clean Kernel"
-	echo "${GRN}  h, Help      Options"
+	echo "${ORNG}options:${RST}"
+	echo "${CYN}  b, build     Build Kernel${RST}"
+	echo "${RST}  c, clean     clean Kernel${RST}"
+	echo "${GRN}  h, Help      Options${RST}"
         read junk
 }
 
@@ -180,7 +203,11 @@ fi
 
         BANNER
 
-        START_SCRIPT
+if [[ ${BUILDING_ON_CI} = 'y' ]]; then
+        START_SCRIPT "${@}"
+else
+	START_SCRIPT
+fi
 
 if [[ "${BUILD}" = 'y' ]]; then
 clear
@@ -188,14 +215,13 @@ clear
         TOOLCHAIN
 clear
         BINFO
-        sleep 0.1
+        sleep 0.3
         BUILD
         CHECK
         END=$(date +%s)
         TIME_STRING="$(FORMAT_TIME "${START}" "${END}")"
         echo "${GRN}Completed In: ${TIME_STRING}"
 elif [[ "${CLEAN}" = 'y' ]]; then
-clear
         CLEAN
 else
 if [[ "${HELP}" = 'y' ]]; then
