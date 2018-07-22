@@ -1,10 +1,10 @@
 #!/bin/bash
 
 #
-# Copyright (C) 2018 Yuvraj Saxena (frap130)
+# Copyright (C) 2018 Yuvraj Saxena (imyuvraj)
 #
 
-# Script To Compile Kernels
+# Script to compile kernel
 
 # Colors
 ORNG=$'\033[0;33m'
@@ -24,37 +24,47 @@ if [[ ${BUILDING_ON_CI} = 'y' ]]; then
         while [[ ${#} -ge 1 ]]; do
 	case "${1}" in
                 "-b"|"--build")
-                        BUILD=y
+                        BUILD_KERNEL=y
+clear
                         ;;
 		"-c"|"--clean")
-			CLEAN=y
+			CLEAN_KERNEL=y
+clear
 			;;
                 "-h"|"--help")
                         HELP=y
+clear
                         ;;
 		*)
+clear
+                        printf '\n'
 			echo "${RED}Opps:Invalid Option${RST}"
-                        exit 1;
+                        exit;
 			;;
 		esac
 		shift
         done
 else
         echo "${GRN} Welcome ${RST}"
-        read -rsn1 -p "${PURP}Type h for help (b|c|h):${RST}" O
+        read -rn1 -p "${PURP}Type h for help (b|c|h): ${RST}" O
 	case "${O}" in
                 "b"|"build")
-                        BUILD=y
+                        BUILD_KERNEL=y
+clear
                         ;;
 		"c"|"clean")
-			CLEAN=y
+			CLEAN_KERNEL=y
+clear
 			;;
                 "h"|"help")
                         HELP=y
+clear
                         ;;
 		*)
+clear
+			printf '\n'
 			echo "${RED}Opps:Invalid Option${RST}"
-                        exit 1;
+                        exit;
 			;;
 		esac
 		shift
@@ -63,30 +73,29 @@ fi
 
 function BANNER() {
 clear
-        echo "${BLD}${CYN} MADE BY YUVRAJ SAXENA (AKA: frap130)"
-        echo
-        echo "${GRN}================================================================================================"
-        echo
-        echo "${BLD}${ORNG}"
-        echo "${BLD}${ORNG}                       88   eeee  eeeeee"
-        echo "${BLD}${ORNG}eeee eeeee  eeeee eeeee 8      8  8    8"
-        echo "${BLD}${ORNG}8    8   8  8   8 8   8 8      8  8    8"
-        echo "${BLD}${ORNG}8eee 8eee8e 8eee8 8eee8 8   eee8  8    8"
-        echo "${BLD}${ORNG}88   88   8 88  8 88   8888    88 8    8"
-        echo "${BLD}${ORNG}88   88   8 88  8 88   8888 eee88 8eeee8"
-        echo
-        echo "${PURP}================================================================================================"
-        echo
-        sleep 0.5
+        INFO
+        echo "${BLD}${BLINK_RED}
+
+▓██   ██▓ █    ██  ██▒   █▓ ██▀███   ▄▄▄      ▄▄▄██▀▀▀
+ ▒██  ██▒ ██  ▓██▒▓██░   █▒▓██ ▒ ██▒▒████▄      ▒██   
+  ▒██ ██░▓██  ▒██░ ▓██  █▒░▓██ ░▄█ ▒▒██  ▀█▄    ░██   
+  ░ ▐██▓░▓▓█  ░██░  ▒██ █░░▒██▀▀█▄  ░██▄▄▄▄██▓██▄██▓  
+  ░ ██▒▓░▒▒█████▓    ▒▀█░  ░██▓ ▒██▒ ▓█   ▓██▒▓███▒   
+   ██▒▒▒ ░▒▓▒ ▒ ▒    ░ ▐░  ░ ▒▓ ░▒▓░ ▒▒   ▓▒█░▒▓▒▒░   
+ ▓██ ░▒░ ░░▒░ ░ ░    ░ ░░    ░▒ ░ ▒░  ▒   ▒▒ ░▒ ░▒░   
+ ▒ ▒ ░░   ░░░ ░ ░      ░░    ░░   ░   ░   ▒   ░ ░ ░   
+ ░ ░        ░           ░     ░           ░  ░░   ░   
+ ░ ░                   ░                              
+${RST}
+"
+sleep 2
 clear
 }
 
-function BINFO() {
+function INFO() {
         BNAME="YUVRAJ SAXENA"
-        BNICK="frap130"
-        echo "${BLD}${CYN} MADE BY ${BNAME} (AKA: ${BNICK})"
-        export KBUILD_BUILD_USER=Yuvraj
-        export KBUILD_BUILD_HOST=∆Thestral
+        BNICK="imyuvraj"
+        echo "${BLD}${CYN} MADE BY ${BNAME} (AKA: ${BNICK}) ${RST}"
 }
 
 function TOOLCHAIN() {
@@ -95,11 +104,12 @@ then
         echo "${RED}####################################"
         echo "${CYN}#       TOOLCHAIN NOT FOUND!       #"
         echo "${YLW}####################################"
+	sleep 0.7
 clear
         echo "${YLW}####################################"
         echo "${GRN}#       CLONING TOOLCHAIN          #"
         echo "####################################"
-        git clone -q https://github.com/frap130/arm-linaro-6.4.1 linaro
+        git clone -q https://github.com/imyuvraj/linaro-6.4.1.git linaro
         export ARCH=arm CROSS_COMPILE=$PWD/linaro/bin/arm-linux-gnueabihf-
 else
         export ARCH=arm CROSS_COMPILE=$PWD/linaro/bin/arm-linux-gnueabihf-
@@ -107,18 +117,23 @@ fi
 }
 
 function BUILD() {
+clear
+        COMPILED_KERNEL="out/arch/arm/boot/zImage-dtb"
+	export KBUILD_BUILD_USER=Yuvraj
+        export KBUILD_BUILD_HOST=∆Thestral
+        export KNM=snowy
         mkdir -p out
         echo "${PURP} READING DEFCONFIG..."
         make z5lte_defconfig O=out/ &>> defconfig.log
 clear
-        echo "${YLW} BUILDING KERNEL..." 
+        echo "${YLW} BUILDING KERNEL..."
         make -j4 O=out/ &>> Kernel.log
-        OIMAGE=out/arch/arm/boot/zImage-dtb
+	COMPILED_DATE=$(date +"%Y-%m-%d-%H:%M:%S")
 }
 
 function CHECK() {
 clear
-if [[ ! -e ${OIMAGE} ]];
+if [[ ! -e ${COMPILED_KERNEL} ]];
 then
         echo "${RED}############################"
         echo "${RED}#        BUILD ERROR!      #"
@@ -131,15 +146,15 @@ else
         echo "${GRN} #####################################"
         echo "${GRN} #                                   #"
         echo "${GRN} #  SUCCESSFULLY BUILDED KERNEL      #"
-        echo "${GRN} #        -BY FRAP130                #"
+        echo "${GRN} #        -BY IMYUVRAJ               #"
         echo "${GRN} #                                   #"
         echo "${GRN} #####################################"
         echo "${ORNG} #  uploading Kernel                #"
         echo "${ORNG} #####################################"
-        mv ${OIMAGE} Kernel
-        zip -r Kernel.zip Kernel
+        cp ${COMPILED_KERNEL} Kernel_${COMPILED_DATE}-${KNM}
+	zip -r Kernel_${COMPILED_DATE}-${KNM}.zip Kernel_${COMPILED_DATE}-${KNM}
 clear
-        TRANSFER Kernel.zip
+        TRANSFER Kernel_${COMPILED_DATE}-${KNM}.zip
 fi
 }
 
@@ -153,10 +168,10 @@ clear
 
 function HELP() {
 	echo "${ORNG}options:${RST}"
-	echo "${CYN}  b, build     Build Kernel${RST}"
-	echo "${RST}  c, clean     clean Kernel${RST}"
-	echo "${GRN}  h, Help      Options${RST}"
-        read junk
+	echo "${CYN}  b      Build Kernel${RST}"
+	echo "${RST}  c      clean Kernel${RST}"
+	echo "${GRN}  h      Options${RST}"
+	read junk
 }
 
 function TRANSFER() {
@@ -165,7 +180,7 @@ function TRANSFER() {
         destination="$2"
         url=$(curl -# -T "${file}" https://transfer.sh/${destination})
         printf '\n'
-        echo "Download $zipname at $url"
+        echo "${GRN}Download $zipname at $url${RST}"
 }
 
 function FORMAT_TIME() {
@@ -200,7 +215,7 @@ fi
 
         echo ${TIME_STRING}
 }
-
+        
         BANNER
 
 if [[ ${BUILDING_ON_CI} = 'y' ]]; then
@@ -209,23 +224,22 @@ else
 	START_SCRIPT
 fi
 
-if [[ "${BUILD}" = 'y' ]]; then
-clear
+if [[ "${BUILD_KERNEL}" = 'y' ]]; then
+	TOOLCHAIN
         START=$(date +"%s")
-        TOOLCHAIN
-clear
-        BINFO
-        sleep 0.3
         BUILD
-        CHECK
+	CHECK
         END=$(date +%s)
         TIME_STRING="$(FORMAT_TIME "${START}" "${END}")"
         echo "${GRN}Completed In: ${TIME_STRING}"
-elif [[ "${CLEAN}" = 'y' ]]; then
+elif [[ "${CLEAN_KERNEL}" = 'y' ]]; then
+        START=$(date +"%s")
         CLEAN
+	END=$(date +%s)
+	TIME_STRING="$(FORMAT_TIME "${START}" "${END}")"
+	echo "${GRN}Completed In: ${TIME_STRING}"
 else
 if [[ "${HELP}" = 'y' ]]; then
-clear
         HELP
 fi
 fi
