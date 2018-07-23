@@ -109,7 +109,7 @@ clear
         echo "${YLW}####################################"
         echo "${GRN}#       CLONING TOOLCHAIN          #"
         echo "####################################"
-        git clone -q https://github.com/imyuvraj/linaro-6.4.1.git linaro
+        git clone -q https://github.com/imyuvraj/arm-linaro-6.4.1.git linaro
         export ARCH=arm CROSS_COMPILE=$PWD/linaro/bin/arm-linux-gnueabihf-
 else
         export ARCH=arm CROSS_COMPILE=$PWD/linaro/bin/arm-linux-gnueabihf-
