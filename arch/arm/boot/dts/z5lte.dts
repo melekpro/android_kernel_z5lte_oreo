@@ -84,7 +84,7 @@
 	};
 };
 
-#include "X5PRO_6735m_fg_bat_setting.dtsi"
+#include "z5ltesettings.dtsi"
 
 &i2c2 {
 /* start sensor */
@@ -675,5 +675,5 @@
 	};
 };
 /* AUDIO end */
-#include <X5PRO_6735m/cust.dtsi>
+#include <z5lte/cust.dtsi>
 /*End of this file, DO NOT ADD ANYTHING HERE*/
