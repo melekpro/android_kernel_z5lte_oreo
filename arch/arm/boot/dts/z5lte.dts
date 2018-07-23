@@ -84,7 +84,7 @@
 	};
 };
 
-#include "z5ltesettings.dtsi"
+#include "X5PRO_6735m_fg_bat_setting.dtsi"
 
 &i2c2 {
 /* start sensor */
@@ -170,20 +170,23 @@
 	tpd-resolution = <480 854>;
 	use-tpd-button = <1>;
 	tpd-key-num = <3>;
-        tpd-key-local= <139 172 158 0>;
-	tpd-key-dim-local = <0x50 0x384 0x64 0x28 0xf0 0x384 0x64 0x28 0x190 0x384 0x64 0x28 0x0 0x0 0x0 0x0>;
+	tpd-key-local= <139 172 158 0>;
+	tpd-key-dim-local = <80 900 100 40 240 900 100 40 400 900 100 40 0 0 0 0>;
 	tpd-max-touch-num = <5>;
 	tpd-filter-enable = <1>;
 	tpd-filter-pixel-density = <93>;
 	tpd-filter-custom-prameters = <0 0 0 0 0 0 0 0 0 0 0 0>;
 	tpd-filter-custom-speed = <0 0 0>;
-        pinctrl-names = "default", "state_eint_as_int", "state_eint_output0", "state_eint_output1", "state_rst_output0", "state_rst_output1";
-	pinctrl-0 = <62>;
-	pinctrl-1 = <63>;
-	pinctrl-2 = <64>;
-	pinctrl-3 = <65>;
-	pinctrl-4 = <66>;
-	pinctrl-5 = <67>;
+
+	pinctrl-names = "default", "state_eint_as_int", 
+		"state_eint_output0", "state_eint_output1",
+		"state_rst_output0", "state_rst_output1";
+	pinctrl-0 = <&CTP_pins_default>;
+	pinctrl-1 = <&CTP_pins_eint_as_int>;
+	pinctrl-2 = <&CTP_pins_eint_output0>;
+	pinctrl-3 = <&CTP_pins_eint_output1>;
+	pinctrl-4 = <&CTP_pins_rst_output0>;
+	pinctrl-5 = <&CTP_pins_rst_output1>;
 	status = "okay";
 };
 &pio {
@@ -672,5 +675,5 @@
 	};
 };
 /* AUDIO end */
-#include <z5lte/cust.dtsi>
+#include <X5PRO_6735m/cust.dtsi>
 /*End of this file, DO NOT ADD ANYTHING HERE*/
